@@ -559,7 +559,6 @@
         }
         
         button i {
-            margin-right: 8px;
             font-size: 0.9rem;
         }
         
@@ -577,6 +576,24 @@
         }
         
         .btn-delete::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            font-size: 0.9rem;
+            padding: 10px 18px;
+            border-radius: 12px;
+            margin-right: 8px;
+        }
+        
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-edit::before {
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
         }
         
@@ -791,6 +808,152 @@
             display: none;
         }
         
+        /* 修改记录模态框样式 */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .edit-modal.show {
+            display: flex;
+        }
+        
+        .edit-modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: fadeInUp 0.4s ease-out;
+        }
+        
+        .edit-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .edit-modal-header h3 {
+            color: var(--dark-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        
+        .close-btn:hover {
+            background: rgba(108, 117, 125, 0.1);
+            color: var(--dark-color);
+        }
+        
+        .edit-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .edit-form .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        .edit-modal-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .edit-modal-buttons button {
+            min-width: 120px;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+        
+        .btn-cancel {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #5a6268, #495057);
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+        
+        /* 响应式修改模态框 */
+        @media (max-width: 768px) {
+            .edit-modal-content {
+                padding: 24px;
+                margin: 16px;
+                width: calc(100% - 32px);
+                max-height: 85vh;
+            }
+            
+            .edit-form {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .edit-form .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .edit-modal-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .edit-modal-buttons button {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+        
         /* 响应式表单优化 */
         @media (max-width: 768px) {
             .record-form {
@@ -846,11 +1009,18 @@
                 font-size: 1.2rem;
             }
             
-            .btn-delete {
+            .btn-delete, .btn-edit {
                 align-self: flex-end;
                 margin-top: 8px;
                 padding: 8px 16px;
                 border-radius: 8px;
+            }
+            
+            .record-actions {
+                display: flex;
+                gap: 8px;
+                align-self: flex-end;
+                margin-top: 8px;
             }
             
             .tabs {
@@ -1412,6 +1582,65 @@
         
         <div class="notification" id="notification"></div>
         
+        <!-- 修改记录模态框 -->
+        <div class="edit-modal" id="edit-modal">
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h3><i class="fas fa-edit"></i> 修改消费记录</h3>
+                    <button class="close-btn" id="close-edit-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form class="edit-form" id="edit-form">
+                    <div class="form-group">
+                        <label for="edit-record-date"><i class="fas fa-calendar-alt"></i> 日期</label>
+                        <input type="date" id="edit-record-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-record-amount"><i class="fas fa-yen-sign"></i> 金额 (¥)</label>
+                        <input type="number" id="edit-record-amount" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-record-type"><i class="fas fa-tags"></i> 消费类型</label>
+                        <select id="edit-record-type" required>
+                            <option value="">请选择类型</option>
+                            <option value="food">🍽️ 餐饮</option>
+                            <option value="shopping">🛍️ 购物</option>
+                            <option value="transport">🚗 交通</option>
+                            <option value="entertainment">🎬 娱乐</option>
+                            <option value="utilities">💡 生活缴费</option>
+                            <option value="other">📝 其他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-record-category"><i class="fas fa-exchange-alt"></i> 收支类型</label>
+                        <select id="edit-record-category" required>
+                            <option value="expense">💸 支出</option>
+                            <option value="income">💰 收入</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="edit-record-description"><i class="fas fa-comment"></i> 描述</label>
+                        <textarea id="edit-record-description" rows="3" placeholder="请输入详细描述..."></textarea>
+                    </div>
+                    
+                    <div class="edit-modal-buttons">
+                        <button type="button" class="btn-cancel" id="cancel-edit">
+                            <i class="fas fa-times"></i> 取消
+                        </button>
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save"></i> 保存修改
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
         <!-- 数据迁移进度提示 -->
         <div class="migration-progress" id="migration-progress" style="display: none;">
             <div class="migration-overlay">
@@ -1862,7 +2091,14 @@
                     <div class="record-amount ${record.category}">
                         ${record.category === 'expense' ? '-' : '+'}¥${parseFloat(record.amount).toFixed(2)}
                     </div>
-                    <button class="btn-delete" data-id="${record.id}">删除</button>
+                    <div class="record-actions">
+                        <button class="btn-edit" data-id="${record.id}">
+                            <i class="fas fa-edit"></i> 修改
+                        </button>
+                        <button class="btn-delete" data-id="${record.id}">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
+                    </div>
                 `;
                 
                 recordsList.appendChild(recordEl);
@@ -1873,6 +2109,14 @@
                 button.addEventListener('click', function() {
                     const recordId = this.getAttribute('data-id');
                     deleteRecord(recordId);
+                });
+            });
+            
+            // 添加修改按钮事件监听
+            document.querySelectorAll('.btn-edit').forEach(button => {
+                button.addEventListener('click', function() {
+                    const recordId = this.getAttribute('data-id');
+                    editRecord(recordId);
                 });
             });
             
@@ -1938,6 +2182,28 @@
                 document.getElementById('import-file').click();
             });
             document.getElementById('import-file').addEventListener('change', importData);
+            
+            // 修改记录模态框事件监听
+            document.getElementById('close-edit-modal').addEventListener('click', closeEditModal);
+            document.getElementById('cancel-edit').addEventListener('click', closeEditModal);
+            document.getElementById('edit-form').addEventListener('submit', saveEditedRecord);
+            
+            // 点击模态框外部关闭
+            document.getElementById('edit-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeEditModal();
+                }
+            });
+            
+            // 键盘快捷键支持
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const editModal = document.getElementById('edit-modal');
+                    if (editModal.classList.contains('show')) {
+                        closeEditModal();
+                    }
+                }
+            });
         }
 
         // 添加记录
@@ -2005,6 +2271,108 @@
         }
 
         // 注意：saveRecords函数已被IndexedDB替代，不再需要
+
+        // 当前正在编辑的记录ID
+        let editingRecordId = null;
+
+        // 打开修改记录模态框
+        async function editRecord(recordId) {
+            try {
+                // 从记录列表中找到要编辑的记录
+                const record = records.find(r => r.id === recordId);
+                if (!record) {
+                    showNotification('未找到要编辑的记录', 'error');
+                    return;
+                }
+
+                editingRecordId = recordId;
+
+                // 填充表单数据
+                document.getElementById('edit-record-date').value = record.date;
+                document.getElementById('edit-record-amount').value = record.amount;
+                document.getElementById('edit-record-type').value = record.type;
+                document.getElementById('edit-record-category').value = record.category;
+                document.getElementById('edit-record-description').value = record.description || '';
+
+                // 显示模态框
+                document.getElementById('edit-modal').classList.add('show');
+                
+                // 聚焦到第一个输入框
+                setTimeout(() => {
+                    document.getElementById('edit-record-date').focus();
+                }, 100);
+
+            } catch (error) {
+                console.error('打开编辑模态框失败:', error);
+                showNotification('打开编辑模态框失败: ' + error.message, 'error');
+            }
+        }
+
+        // 关闭修改记录模态框
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.remove('show');
+            editingRecordId = null;
+            
+            // 清空表单
+            document.getElementById('edit-form').reset();
+        }
+
+        // 保存修改后的记录
+        async function saveEditedRecord(e) {
+            e.preventDefault();
+            
+            if (!editingRecordId) {
+                showNotification('没有正在编辑的记录', 'error');
+                return;
+            }
+
+            try {
+                const date = document.getElementById('edit-record-date').value;
+                const amount = document.getElementById('edit-record-amount').value;
+                const type = document.getElementById('edit-record-type').value;
+                const category = document.getElementById('edit-record-category').value;
+                const description = document.getElementById('edit-record-description').value;
+
+                if (!date || !amount || !type || !category) {
+                    showNotification('请填写所有必填字段', 'warning');
+                    return;
+                }
+
+                // 验证金额
+                const amountNum = parseFloat(amount);
+                if (isNaN(amountNum) || amountNum < 0) {
+                    showNotification('请输入有效的金额', 'warning');
+                    return;
+                }
+
+                // 创建更新后的记录对象
+                const updatedRecord = {
+                    id: editingRecordId,
+                    date: date,
+                    amount: amountNum.toFixed(2),
+                    type: type,
+                    category: category,
+                    description: description
+                };
+
+                // 更新IndexedDB中的记录
+                await bookkeepingDB.updateRecord(updatedRecord);
+
+                // 关闭模态框
+                closeEditModal();
+
+                // 更新界面
+                await loadRecords();
+                initializeCalendar();
+                renderCalendar();
+
+                showNotification('记录修改成功！', 'success');
+
+            } catch (error) {
+                console.error('保存修改失败:', error);
+                showNotification('保存修改失败: ' + error.message, 'error');
+            }
+        }
 
         // 生成图表
         function generateChart() {
