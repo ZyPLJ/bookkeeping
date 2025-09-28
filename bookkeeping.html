@@ -504,6 +504,319 @@
             transition: all 0.3s ease;
             font-weight: 500;
         }
+
+        /* 日历选择框特殊样式 */
+        input[type="date"] {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="date"]:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+            transform: translateY(-1px);
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 8px 25px rgba(59, 130, 246, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* 日历选择框的伪元素装饰 */
+        input[type="date"]::before {
+            content: '📅';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* 日历选择框的占位符样式 */
+        input[type="date"]::-webkit-datetime-edit-text {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        input[type="date"]::-webkit-datetime-edit-month-field,
+        input[type="date"]::-webkit-datetime-edit-day-field,
+        input[type="date"]::-webkit-datetime-edit-year-field {
+            color: var(--dark-color);
+            font-weight: 600;
+            background: transparent;
+        }
+
+        /* 日历选择框的下拉箭头样式 */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* 日历选择框的聚焦状态 */
+        input[type="date"]:focus::-webkit-calendar-picker-indicator {
+            background: rgba(59, 130, 246, 0.15);
+            transform: scale(1.15);
+        }
+
+        /* 自定义日期选择器样式 */
+        .custom-date-picker {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .custom-date-input {
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 45px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(5px);
+            color: var(--dark-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .custom-date-input:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .custom-date-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 8px 25px rgba(59, 130, 246, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .custom-date-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .custom-date-picker:hover .custom-date-icon {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* 自定义日期选择器弹窗 */
+        .date-picker-popup {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            margin-top: 8px;
+            padding: 20px;
+            display: none;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .date-picker-popup.show {
+            display: block;
+        }
+
+        .date-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .date-picker-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .date-picker-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .date-picker-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .date-picker-nav-btn:hover {
+            background: #f3f4f6;
+            border-color: var(--primary-color);
+        }
+
+        .date-picker-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+
+        .date-picker-weekday {
+            text-align: center;
+            padding: 8px 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            background: #f9fafb;
+            border-radius: 6px;
+        }
+
+        .date-picker-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .date-picker-day:hover {
+            background: #f3f4f6;
+        }
+
+        .date-picker-day.other-month {
+            color: rgba(107, 114, 128, 0.5);
+        }
+
+        .date-picker-day.current-month {
+            color: var(--dark-color);
+        }
+
+        .date-picker-day.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .date-picker-day.today {
+            background: #dbeafe;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .date-picker-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .date-picker-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .date-picker-btn.primary {
+            background: var(--primary-color);
+            color: white;
+            border: 1px solid var(--primary-color);
+        }
+
+        .date-picker-btn.secondary {
+            background: white;
+            color: var(--dark-color);
+            border: 1px solid #d1d5db;
+        }
+
+        .date-picker-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-picker-btn.primary:hover {
+            background: var(--secondary-color);
+        }
+
+        .date-picker-btn.secondary:hover {
+            background: #f9fafb;
+        }
+
+        /* 移动端自定义日期选择器 */
+        @media (max-width: 768px) {
+            .custom-date-input {
+                font-size: 16px;
+                padding: 16px 20px;
+                padding-right: 50px;
+            }
+
+            .date-picker-popup {
+                margin: 8px;
+                left: 0;
+                right: 0;
+                width: auto;
+            }
+
+            .date-picker-day {
+                font-size: 0.85rem;
+                min-height: 36px;
+            }
+
+            .date-picker-nav-btn {
+                width: 36px;
+                height: 36px;
+            }
+        }
         
         input:focus, select:focus, textarea:focus {
             outline: none;
@@ -969,6 +1282,25 @@
                 padding: 14px 16px;
                 font-size: 16px; /* 防止iOS缩放 */
                 border-radius: 12px;
+            }
+
+            /* 移动端日历选择框样式优化 */
+            input[type="date"] {
+                font-size: 16px; /* 防止iOS缩放 */
+                padding: 16px 20px;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+                border: 2px solid rgba(59, 130, 246, 0.4);
+                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+            }
+
+            input[type="date"]:hover {
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+                transform: none; /* 移动端禁用hover变换 */
+            }
+
+            input[type="date"]:focus {
+                transform: none; /* 移动端禁用focus变换 */
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), 0 8px 25px rgba(59, 130, 246, 0.3);
             }
             
             button {
@@ -1448,7 +1780,26 @@
                 <div class="record-form">
                     <div class="form-group">
                         <label for="record-date"><i class="fas fa-calendar-alt"></i> 日期</label>
-                        <input type="date" id="record-date" required>
+                        <div class="custom-date-picker">
+                            <input type="text" class="custom-date-input" id="record-date" placeholder="请选择日期" readonly>
+                            <span class="custom-date-icon">📅</span>
+                            <div class="date-picker-popup" id="date-picker-popup">
+                                <div class="date-picker-header">
+                                    <div class="date-picker-title" id="date-picker-title">2023年11月</div>
+                                    <div class="date-picker-nav">
+                                        <button type="button" class="date-picker-nav-btn" id="prev-month-btn">‹</button>
+                                        <button type="button" class="date-picker-nav-btn" id="next-month-btn">›</button>
+                                    </div>
+                                </div>
+                                <div class="date-picker-calendar" id="date-picker-calendar">
+                                    <!-- 日期将通过JavaScript动态生成 -->
+                                </div>
+                                <div class="date-picker-actions">
+                                    <button type="button" class="date-picker-btn secondary" id="clear-date-btn">清除</button>
+                                    <button type="button" class="date-picker-btn primary" id="confirm-date-btn">确定</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -1498,7 +1849,26 @@
                     <div class="filter-controls">
                         <div class="form-group">
                             <label for="filter-date"><i class="fas fa-calendar"></i> 按日期筛选</label>
-                            <input type="date" id="filter-date">
+                            <div class="custom-date-picker">
+                                <input type="text" class="custom-date-input" id="filter-date" placeholder="请选择日期" readonly>
+                                <span class="custom-date-icon">📅</span>
+                                <div class="date-picker-popup" id="filter-date-picker-popup">
+                                    <div class="date-picker-header">
+                                        <div class="date-picker-title" id="filter-date-picker-title">2023年11月</div>
+                                        <div class="date-picker-nav">
+                                            <button type="button" class="date-picker-nav-btn" id="filter-prev-month-btn">‹</button>
+                                            <button type="button" class="date-picker-nav-btn" id="filter-next-month-btn">›</button>
+                                        </div>
+                                    </div>
+                                    <div class="date-picker-calendar" id="filter-date-picker-calendar">
+                                        <!-- 日期将通过JavaScript动态生成 -->
+                                    </div>
+                                    <div class="date-picker-actions">
+                                        <button type="button" class="date-picker-btn secondary" id="filter-clear-date-btn">清除</button>
+                                        <button type="button" class="date-picker-btn primary" id="filter-confirm-date-btn">确定</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -1558,12 +1928,50 @@
                         <div class="filter-controls">
                             <div class="form-group">
                                 <label for="summary-start-date"><i class="fas fa-calendar-plus"></i> 开始日期</label>
-                                <input type="date" id="summary-start-date">
+                                <div class="custom-date-picker">
+                                    <input type="text" class="custom-date-input" id="summary-start-date" placeholder="请选择开始日期" readonly>
+                                    <span class="custom-date-icon">📅</span>
+                                    <div class="date-picker-popup" id="summary-start-date-picker-popup">
+                                        <div class="date-picker-header">
+                                            <div class="date-picker-title" id="summary-start-date-picker-title">2023年11月</div>
+                                            <div class="date-picker-nav">
+                                                <button type="button" class="date-picker-nav-btn" id="summary-start-prev-month-btn">‹</button>
+                                                <button type="button" class="date-picker-nav-btn" id="summary-start-next-month-btn">›</button>
+                                            </div>
+                                        </div>
+                                        <div class="date-picker-calendar" id="summary-start-date-picker-calendar">
+                                            <!-- 日期将通过JavaScript动态生成 -->
+                                        </div>
+                                        <div class="date-picker-actions">
+                                            <button type="button" class="date-picker-btn secondary" id="summary-start-clear-date-btn">清除</button>
+                                            <button type="button" class="date-picker-btn primary" id="summary-start-confirm-date-btn">确定</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="summary-end-date"><i class="fas fa-calendar-check"></i> 结束日期</label>
-                                <input type="date" id="summary-end-date">
+                                <div class="custom-date-picker">
+                                    <input type="text" class="custom-date-input" id="summary-end-date" placeholder="请选择结束日期" readonly>
+                                    <span class="custom-date-icon">📅</span>
+                                    <div class="date-picker-popup" id="summary-end-date-picker-popup">
+                                        <div class="date-picker-header">
+                                            <div class="date-picker-title" id="summary-end-date-picker-title">2023年11月</div>
+                                            <div class="date-picker-nav">
+                                                <button type="button" class="date-picker-nav-btn" id="summary-end-prev-month-btn">‹</button>
+                                                <button type="button" class="date-picker-nav-btn" id="summary-end-next-month-btn">›</button>
+                                            </div>
+                                        </div>
+                                        <div class="date-picker-calendar" id="summary-end-date-picker-calendar">
+                                            <!-- 日期将通过JavaScript动态生成 -->
+                                        </div>
+                                        <div class="date-picker-actions">
+                                            <button type="button" class="date-picker-btn secondary" id="summary-end-clear-date-btn">清除</button>
+                                            <button type="button" class="date-picker-btn primary" id="summary-end-confirm-date-btn">确定</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -1595,7 +2003,26 @@
                 <form class="edit-form" id="edit-form">
                     <div class="form-group">
                         <label for="edit-record-date"><i class="fas fa-calendar-alt"></i> 日期</label>
-                        <input type="date" id="edit-record-date" required>
+                        <div class="custom-date-picker">
+                            <input type="text" class="custom-date-input" id="edit-record-date" placeholder="请选择日期" readonly required>
+                            <span class="custom-date-icon">📅</span>
+                            <div class="date-picker-popup" id="edit-date-picker-popup">
+                                <div class="date-picker-header">
+                                    <div class="date-picker-title" id="edit-date-picker-title">2023年11月</div>
+                                    <div class="date-picker-nav">
+                                        <button type="button" class="date-picker-nav-btn" id="edit-prev-month-btn">‹</button>
+                                        <button type="button" class="date-picker-nav-btn" id="edit-next-month-btn">›</button>
+                                    </div>
+                                </div>
+                                <div class="date-picker-calendar" id="edit-date-picker-calendar">
+                                    <!-- 日期将通过JavaScript动态生成 -->
+                                </div>
+                                <div class="date-picker-actions">
+                                    <button type="button" class="date-picker-btn secondary" id="edit-clear-date-btn">清除</button>
+                                    <button type="button" class="date-picker-btn primary" id="edit-confirm-date-btn">确定</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -1669,6 +2096,11 @@
         const DB_NAME = 'BookkeepingDB';
         const DB_VERSION = 1;
         const STORE_NAME = 'records';
+
+        // 自定义日期选择器相关变量
+        let datePickerCurrentDate = new Date();
+        let datePickerSelectedDate = null;
+        let isDatePickerOpen = false;
 
         // IndexedDB 操作工具函数
         class BookkeepingDB {
@@ -1893,6 +2325,7 @@
                 updateRecordFormDate();
                 setupEventListeners();
                 initializeTimeSummary();
+                initializeCustomDatePicker();
                 
                 showNotification('系统初始化完成', 'success');
             } catch (error) {
@@ -2913,6 +3346,229 @@
             return date1.getFullYear() === date2.getFullYear() &&
                    date1.getMonth() === date2.getMonth() &&
                    date1.getDate() === date2.getDate();
+        }
+
+        // 通用日期选择器初始化函数
+        function initializeDatePicker(inputId, popupId, titleId, calendarId, prevBtnId, nextBtnId, clearBtnId, confirmBtnId) {
+            const dateInput = document.getElementById(inputId);
+            const datePickerPopup = document.getElementById(popupId);
+            const datePickerTitle = document.getElementById(titleId);
+            const datePickerCalendar = document.getElementById(calendarId);
+            const prevMonthBtn = document.getElementById(prevBtnId);
+            const nextMonthBtn = document.getElementById(nextBtnId);
+            const clearDateBtn = document.getElementById(clearBtnId);
+            const confirmDateBtn = document.getElementById(confirmBtnId);
+
+            if (!dateInput || !datePickerPopup) return;
+
+            let currentDate = new Date();
+            let selectedDate = null;
+            let isOpen = false;
+
+            // 点击输入框打开日期选择器
+            dateInput.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (!isOpen) {
+                    openDatePicker();
+                }
+            });
+
+            // 月份导航
+            if (prevMonthBtn) {
+                prevMonthBtn.addEventListener('click', function() {
+                    currentDate.setMonth(currentDate.getMonth() - 1);
+                    renderDatePickerCalendar();
+                });
+            }
+
+            if (nextMonthBtn) {
+                nextMonthBtn.addEventListener('click', function() {
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                    renderDatePickerCalendar();
+                });
+            }
+
+            // 清除日期
+            if (clearDateBtn) {
+                clearDateBtn.addEventListener('click', function() {
+                    selectedDate = null;
+                    dateInput.value = '';
+                    closeDatePicker();
+                });
+            }
+
+            // 确认选择
+            if (confirmDateBtn) {
+                confirmDateBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('确认按钮点击，选中日期:', selectedDate); // 调试信息
+                    
+                    if (selectedDate) {
+                        const year = selectedDate.getFullYear();
+                        const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+                        const day = selectedDate.getDate().toString().padStart(2, '0');
+                        const formattedDate = `${year}-${month}-${day}`;
+                        
+                        dateInput.value = formattedDate;
+                        console.log('设置日期到输入框:', formattedDate); // 调试信息
+                        
+                        // 触发change事件，确保其他代码能监听到日期变化
+                        dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+                        dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    } else {
+                        console.log('没有选中日期'); // 调试信息
+                    }
+                    closeDatePicker();
+                });
+            }
+
+            // 点击外部关闭日期选择器
+            document.addEventListener('click', function(e) {
+                if (isOpen && 
+                    !datePickerPopup.contains(e.target) && 
+                    !dateInput.contains(e.target)) {
+                    closeDatePicker();
+                }
+            });
+
+            // 渲染日期选择器日历
+            function renderDatePickerCalendar() {
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+                
+                // 更新标题
+                if (datePickerTitle) {
+                    datePickerTitle.textContent = `${year}年${month + 1}月`;
+                }
+                
+                // 清空日历
+                if (datePickerCalendar) {
+                    datePickerCalendar.innerHTML = '';
+                    
+                    // 添加星期标题
+                    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+                    weekdays.forEach(day => {
+                        const weekdayEl = document.createElement('div');
+                        weekdayEl.className = 'date-picker-weekday';
+                        weekdayEl.textContent = day;
+                        datePickerCalendar.appendChild(weekdayEl);
+                    });
+                    
+                    // 获取当月第一天和最后一天
+                    const firstDay = new Date(year, month, 1);
+                    const lastDay = new Date(year, month + 1, 0);
+                    const firstDayIndex = firstDay.getDay();
+                    
+                    // 添加上个月的日子
+                    const prevMonthLastDay = new Date(year, month, 0).getDate();
+                    for (let i = prevMonthLastDay - firstDayIndex + 1; i <= prevMonthLastDay; i++) {
+                        const dayEl = createDatePickerDay(i, 'other-month', new Date(year, month - 1, i));
+                        datePickerCalendar.appendChild(dayEl);
+                    }
+                    
+                    // 添加当月的日子
+                    for (let i = 1; i <= lastDay.getDate(); i++) {
+                        const dayDate = new Date(year, month, i);
+                        const isToday = isSameDay(dayDate, new Date());
+                        const isSelected = selectedDate && isSameDay(dayDate, selectedDate);
+                        
+                        let className = 'date-picker-day current-month';
+                        if (isToday) className += ' today';
+                        if (isSelected) className += ' selected';
+                        
+                        const dayEl = createDatePickerDay(i, className, dayDate);
+                        datePickerCalendar.appendChild(dayEl);
+                    }
+                    
+                    // 添加下个月的日子
+                    const totalCells = 42; // 6行7列
+                    const nextMonthDays = totalCells - (lastDay.getDate() + firstDayIndex);
+                    for (let i = 1; i <= nextMonthDays; i++) {
+                        const dayEl = createDatePickerDay(i, 'other-month', new Date(year, month + 1, i));
+                        datePickerCalendar.appendChild(dayEl);
+                    }
+                }
+            }
+
+            // 创建日期元素
+            function createDatePickerDay(day, className, date) {
+                const dayEl = document.createElement('div');
+                dayEl.className = `date-picker-day ${className}`;
+                dayEl.textContent = day;
+                
+                dayEl.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('点击日期:', day, className); // 调试信息
+                    
+                    // 只有当前月份的日期才能被选中
+                    if (className.includes('current-month')) {
+                        // 移除之前选中的日期
+                        if (datePickerCalendar) {
+                            datePickerCalendar.querySelectorAll('.date-picker-day.selected').forEach(el => {
+                                el.classList.remove('selected');
+                            });
+                        }
+                        
+                        // 选中当前日期
+                        dayEl.classList.add('selected');
+                        selectedDate = new Date(date);
+                        
+                        console.log('选中日期:', selectedDate); // 调试信息
+                        
+                        // 自动确认选择（可选）
+                        setTimeout(() => {
+                            if (selectedDate) {
+                                const year = selectedDate.getFullYear();
+                                const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+                                const day = selectedDate.getDate().toString().padStart(2, '0');
+                                const formattedDate = `${year}-${month}-${day}`;
+                                
+                                dateInput.value = formattedDate;
+                                console.log('自动设置日期到输入框:', formattedDate); // 调试信息
+                                
+                                // 触发change事件
+                                dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+                                dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                
+                                // 关闭日期选择器
+                                closeDatePicker();
+                            }
+                        }, 200); // 延迟200ms让用户看到选中效果
+                    }
+                });
+                
+                return dayEl;
+            }
+
+            // 打开日期选择器
+            function openDatePicker() {
+                isOpen = true;
+                datePickerPopup.classList.add('show');
+                renderDatePickerCalendar();
+            }
+
+            // 关闭日期选择器
+            function closeDatePicker() {
+                isOpen = false;
+                datePickerPopup.classList.remove('show');
+            }
+
+            // 初始化渲染
+            renderDatePickerCalendar();
+        }
+
+        // 自定义日期选择器功能
+        function initializeCustomDatePicker() {
+            // 初始化所有日期选择器
+            initializeDatePicker('record-date', 'date-picker-popup', 'date-picker-title', 'date-picker-calendar', 'prev-month-btn', 'next-month-btn', 'clear-date-btn', 'confirm-date-btn');
+            initializeDatePicker('filter-date', 'filter-date-picker-popup', 'filter-date-picker-title', 'filter-date-picker-calendar', 'filter-prev-month-btn', 'filter-next-month-btn', 'filter-clear-date-btn', 'filter-confirm-date-btn');
+            initializeDatePicker('summary-start-date', 'summary-start-date-picker-popup', 'summary-start-date-picker-title', 'summary-start-date-picker-calendar', 'summary-start-prev-month-btn', 'summary-start-next-month-btn', 'summary-start-clear-date-btn', 'summary-start-confirm-date-btn');
+            initializeDatePicker('summary-end-date', 'summary-end-date-picker-popup', 'summary-end-date-picker-title', 'summary-end-date-picker-calendar', 'summary-end-prev-month-btn', 'summary-end-next-month-btn', 'summary-end-clear-date-btn', 'summary-end-confirm-date-btn');
+            initializeDatePicker('edit-record-date', 'edit-date-picker-popup', 'edit-date-picker-title', 'edit-date-picker-calendar', 'edit-prev-month-btn', 'edit-next-month-btn', 'edit-clear-date-btn', 'edit-confirm-date-btn');
         }
     </script>
 </body>
