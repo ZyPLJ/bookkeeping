@@ -649,11 +649,14 @@
             padding: 20px;
             display: none;
             animation: fadeInUp 0.3s ease-out;
+            max-width: 320px;
+            width: 100%;
         }
 
         .date-picker-popup.show {
             display: block;
         }
+
 
         .date-picker-header {
             display: flex;
@@ -801,10 +804,14 @@
             }
 
             .date-picker-popup {
-                margin: 8px;
-                left: 0;
-                right: 0;
-                width: auto;
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                width: 90vw !important;
+                max-width: 400px !important;
+                margin: 0 !important;
+                z-index: 10000 !important;
             }
 
             .date-picker-day {
@@ -3433,6 +3440,7 @@
                 }
             });
 
+
             // 渲染日期选择器日历
             function renderDatePickerCalendar() {
                 const year = currentDate.getFullYear();
@@ -3547,7 +3555,52 @@
             // 打开日期选择器
             function openDatePicker() {
                 isOpen = true;
-                datePickerPopup.classList.add('show');
+                
+                const popup = datePickerPopup;
+                
+                // 检查是否为移动端
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // 移动端：居中显示
+                    popup.style.position = 'fixed';
+                    popup.style.top = '50%';
+                    popup.style.left = '50%';
+                    popup.style.transform = 'translate(-50%, -50%)';
+                    popup.style.width = '90vw';
+                    popup.style.maxWidth = '400px';
+                    popup.style.margin = '0';
+                    popup.style.zIndex = '10000';
+                } else {
+                    // 桌面端：使用相对定位，智能上下切换
+                    const inputRect = dateInput.getBoundingClientRect();
+                    const popupHeight = 400; // 弹出框的大概高度
+                    
+                    // 重置样式
+                    popup.style.position = 'absolute';
+                    popup.style.top = '100%';
+                    popup.style.left = '0';
+                    popup.style.right = '0';
+                    popup.style.transform = 'none';
+                    popup.style.width = '100%';
+                    popup.style.zIndex = '1000';
+                    popup.style.marginTop = '8px';
+                    
+                    // 检查下方空间是否足够
+                    const spaceBelow = window.innerHeight - inputRect.bottom;
+                    const spaceAbove = inputRect.top;
+                    
+                    if (spaceBelow < popupHeight && spaceAbove > popupHeight) {
+                        // 下方空间不够，上方空间足够，显示在上方
+                        popup.style.top = 'auto';
+                        popup.style.bottom = '100%';
+                        popup.style.marginTop = '0';
+                        popup.style.marginBottom = '8px';
+                    }
+                    // 如果下方空间足够，保持默认显示在下方
+                }
+                
+                popup.classList.add('show');
                 renderDatePickerCalendar();
             }
 
@@ -3555,7 +3608,66 @@
             function closeDatePicker() {
                 isOpen = false;
                 datePickerPopup.classList.remove('show');
+                // 重置样式
+                datePickerPopup.style.position = '';
+                datePickerPopup.style.top = '';
+                datePickerPopup.style.left = '';
+                datePickerPopup.style.right = '';
+                datePickerPopup.style.bottom = '';
+                datePickerPopup.style.width = '';
+                datePickerPopup.style.transform = '';
+                datePickerPopup.style.marginTop = '';
+                datePickerPopup.style.marginBottom = '';
             }
+
+            // 重新定位弹出框
+            function repositionPopup() {
+                if (isOpen) {
+                    const popup = datePickerPopup;
+                    const isMobile = window.innerWidth <= 768;
+                    
+                    if (isMobile) {
+                        // 移动端：保持居中
+                        popup.style.position = 'fixed';
+                        popup.style.top = '50%';
+                        popup.style.left = '50%';
+                        popup.style.transform = 'translate(-50%, -50%)';
+                        popup.style.width = '90vw';
+                        popup.style.maxWidth = '400px';
+                        popup.style.zIndex = '10000';
+                    } else {
+                        // 桌面端：重新计算位置
+                        const inputRect = dateInput.getBoundingClientRect();
+                        const popupHeight = 400;
+                        
+                        // 重置样式
+                        popup.style.position = 'absolute';
+                        popup.style.top = '100%';
+                        popup.style.left = '0';
+                        popup.style.right = '0';
+                        popup.style.transform = 'none';
+                        popup.style.width = '100%';
+                        popup.style.zIndex = '1000';
+                        popup.style.marginTop = '8px';
+                        
+                        // 检查下方空间是否足够
+                        const spaceBelow = window.innerHeight - inputRect.bottom;
+                        const spaceAbove = inputRect.top;
+                        
+                        if (spaceBelow < popupHeight && spaceAbove > popupHeight) {
+                            // 下方空间不够，上方空间足够，显示在上方
+                            popup.style.top = 'auto';
+                            popup.style.bottom = '100%';
+                            popup.style.marginTop = '0';
+                            popup.style.marginBottom = '8px';
+                        }
+                    }
+                }
+            }
+
+            // 监听窗口滚动和大小变化
+            window.addEventListener('scroll', repositionPopup);
+            window.addEventListener('resize', repositionPopup);
 
             // 初始化渲染
             renderDatePickerCalendar();
