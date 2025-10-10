@@ -141,6 +141,20 @@
             transform: translateY(0);
         }
         
+        .btn-reminder {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+        
+        .btn-reminder:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-reminder:active {
+            transform: translateY(0);
+        }
+        
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -221,7 +235,7 @@
                 align-items: center;
             }
             
-            .btn-import, .btn-export {
+            .btn-import, .btn-export, .btn-reminder {
                 width: 100%;
                 max-width: 280px;
                 justify-content: center;
@@ -1747,6 +1761,190 @@
             font-size: 1.1rem;
         }
         
+        /* 备份提醒样式 */
+        .backup-reminder {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            z-index: 2000;
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideInDown 0.5s ease-out;
+            font-weight: 600;
+        }
+
+        .backup-reminder.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+            pointer-events: none;
+            transition: all 0.3s ease-out;
+        }
+
+        .backup-reminder-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .backup-reminder-header i {
+            font-size: 1.3rem;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        .backup-reminder-content {
+            margin-bottom: 16px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .backup-reminder-stats {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+
+        .backup-reminder-stats .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .backup-reminder-stats .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .backup-reminder-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .backup-reminder-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .backup-reminder-btn.primary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #ee5a24;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .backup-reminder-btn.primary:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .backup-reminder-btn.secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .backup-reminder-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .backup-reminder-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .backup-reminder-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* 备份提醒动画 */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* 移动端备份提醒样式 */
+        @media (max-width: 768px) {
+            .backup-reminder {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                transform: none;
+                width: auto;
+                max-width: none;
+                padding: 16px 20px;
+                border-radius: 12px;
+            }
+
+            .backup-reminder.hidden {
+                transform: translateY(-20px);
+            }
+
+            .backup-reminder-actions {
+                flex-direction: column;
+            }
+
+            .backup-reminder-btn {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+
         /* 打印样式 */
         @media print {
             body {
@@ -1776,6 +1974,10 @@
             .migration-progress {
                 display: none;
             }
+
+            .backup-reminder {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -1797,6 +1999,9 @@
         <header>
             <h1>日历记账系统</h1>
             <p>轻松记录和管理您的日常消费</p>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 8px;">
+                💡 提示：系统会自动提醒您定期备份数据，确保数据安全
+            </p>
         </header>
         
         <div class="import-export">
@@ -1807,6 +2012,10 @@
             <button class="btn-export" id="export-btn">
                 <i class="fas fa-download"></i>
                 导出数据
+            </button>
+            <button class="btn-reminder" id="backup-reminder-btn" title="检查备份提醒">
+                <i class="fas fa-bell"></i>
+                备份提醒
             </button>
             <input type="file" id="import-file" class="import-file-input" accept=".json">
         </div>
@@ -2045,6 +2254,37 @@
         
         <div class="notification" id="notification"></div>
         
+        <!-- 备份提醒弹窗 -->
+        <div class="backup-reminder hidden" id="backup-reminder" style="display: none;">
+            <button class="backup-reminder-close" id="backup-reminder-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="backup-reminder-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>数据备份提醒</span>
+            </div>
+            <div class="backup-reminder-content">
+                为了确保您的记账数据安全，建议定期导出数据进行备份。您的数据存储在浏览器本地，可能会因为清理缓存等原因丢失。
+            </div>
+            <div class="backup-reminder-stats" id="backup-reminder-stats">
+                <!-- 统计信息将通过JavaScript动态生成 -->
+            </div>
+            <div class="backup-reminder-actions">
+                <button class="backup-reminder-btn primary" id="backup-now-btn">
+                    <i class="fas fa-download"></i>
+                    立即备份
+                </button>
+                <button class="backup-reminder-btn secondary" id="backup-later-btn">
+                    <i class="fas fa-clock"></i>
+                    稍后提醒
+                </button>
+                <button class="backup-reminder-btn secondary" id="backup-tomorrow-btn">
+                    <i class="fas fa-calendar"></i>
+                    明天提醒
+                </button>
+            </div>
+        </div>
+        
         <!-- 修改记录模态框 -->
         <div class="edit-modal" id="edit-modal">
             <div class="edit-modal-content">
@@ -2259,6 +2499,438 @@
         // 创建数据库实例
         const bookkeepingDB = new BookkeepingDB();
 
+        // 备份提醒系统
+        class BackupReminderSystem {
+            constructor() {
+                this.reminderKey = 'bookkeeping_backup_reminder';
+                this.recordCountKey = 'bookkeeping_record_count';
+                this.lastBackupKey = 'bookkeeping_last_backup';
+                this.reminderSettingsKey = 'bookkeeping_reminder_settings';
+                this.isReminderVisible = false;
+                
+                // 默认提醒设置
+                this.defaultSettings = {
+                    enabled: true,
+                    timeInterval: 7 * 24 * 60 * 60 * 1000, // 7天（毫秒）
+                    recordThreshold: 10, // 新增10条记录后提醒
+                    continuousDaysThreshold: 3, // 连续3天有记录后提醒
+                    sessionThreshold: 5 // 连续使用5次后提醒
+                };
+                
+                this.settings = this.loadSettings();
+                this.init();
+            }
+
+            // 初始化备份提醒系统
+            init() {
+                this.setupEventListeners();
+                // 延迟检查提醒条件，避免页面加载时立即显示
+                setTimeout(() => {
+                    this.checkReminderConditions();
+                }, 2000); // 2秒后检查
+            }
+
+            // 加载提醒设置
+            loadSettings() {
+                try {
+                    const saved = localStorage.getItem(this.reminderSettingsKey);
+                    return saved ? { ...this.defaultSettings, ...JSON.parse(saved) } : this.defaultSettings;
+                } catch (error) {
+                    console.warn('加载备份提醒设置失败:', error);
+                    return this.defaultSettings;
+                }
+            }
+
+            // 保存提醒设置
+            saveSettings() {
+                try {
+                    localStorage.setItem(this.reminderSettingsKey, JSON.stringify(this.settings));
+                } catch (error) {
+                    console.warn('保存备份提醒设置失败:', error);
+                }
+            }
+
+            // 设置事件监听器
+            setupEventListeners() {
+                // 关闭提醒
+                document.getElementById('backup-reminder-close').addEventListener('click', () => {
+                    this.hideReminder();
+                });
+
+                // 立即备份
+                document.getElementById('backup-now-btn').addEventListener('click', () => {
+                    this.hideReminder();
+                    this.markBackupCompleted();
+                    exportData(); // 调用现有的导出功能
+                });
+
+                // 稍后提醒（2小时后）
+                document.getElementById('backup-later-btn').addEventListener('click', () => {
+                    this.hideReminder();
+                    this.scheduleReminder(2 * 60 * 60 * 1000); // 2小时后
+                });
+
+                // 明天提醒
+                document.getElementById('backup-tomorrow-btn').addEventListener('click', () => {
+                    this.hideReminder();
+                    this.scheduleReminder(24 * 60 * 60 * 1000); // 24小时后
+                });
+
+                // 监听数据变化
+                this.observeDataChanges();
+            }
+
+            // 监听数据变化
+            observeDataChanges() {
+                // 重写原有的数据库操作方法，添加记录变化监听
+                const originalAddRecord = bookkeepingDB.addRecord.bind(bookkeepingDB);
+                bookkeepingDB.addRecord = async (record) => {
+                    const result = await originalAddRecord(record);
+                    this.onRecordAdded();
+                    return result;
+                };
+
+                const originalDeleteRecord = bookkeepingDB.deleteRecord.bind(bookkeepingDB);
+                bookkeepingDB.deleteRecord = async (id) => {
+                    const result = await originalDeleteRecord(id);
+                    this.onRecordDeleted();
+                    return result;
+                };
+
+                const originalUpdateRecord = bookkeepingDB.updateRecord.bind(bookkeepingDB);
+                bookkeepingDB.updateRecord = async (record) => {
+                    const result = await originalUpdateRecord(record);
+                    this.onRecordUpdated();
+                    return result;
+                };
+            }
+
+            // 记录添加时的处理
+            onRecordAdded() {
+                this.incrementRecordCount();
+                this.updateSessionCount();
+                console.log('记录已添加，当前计数:', this.getRecordCount());
+                this.checkReminderConditions();
+            }
+
+            // 记录删除时的处理
+            onRecordDeleted() {
+                this.checkReminderConditions();
+            }
+
+            // 记录更新时的处理
+            onRecordUpdated() {
+                this.checkReminderConditions();
+            }
+
+            // 增加记录计数
+            incrementRecordCount() {
+                const count = this.getRecordCount() + 1;
+                localStorage.setItem(this.recordCountKey, count.toString());
+            }
+
+            // 获取记录计数
+            getRecordCount() {
+                const count = localStorage.getItem(this.recordCountKey);
+                return count ? parseInt(count, 10) : 0;
+            }
+
+            // 更新会话计数
+            updateSessionCount() {
+                const sessionKey = 'bookkeeping_session_count';
+                const today = new Date().toDateString();
+                const lastSession = localStorage.getItem('bookkeeping_last_session');
+                
+                let count = 1;
+                if (lastSession === today) {
+                    count = parseInt(localStorage.getItem(sessionKey) || '0', 10) + 1;
+                }
+                
+                localStorage.setItem(sessionKey, count.toString());
+                localStorage.setItem('bookkeeping_last_session', today);
+                
+                return count;
+            }
+
+            // 检查提醒条件
+            async checkReminderConditions() {
+                if (!this.settings.enabled || this.isReminderVisible) {
+                    return;
+                }
+
+                // 检查是否在页面加载后的合理时间内（避免立即显示）
+                const pageLoadTime = performance.timing.navigationStart;
+                const currentTime = Date.now();
+                const timeSinceLoad = currentTime - pageLoadTime;
+                
+                // 如果页面加载时间少于3秒，延迟检查
+                if (timeSinceLoad < 3000) {
+                    setTimeout(() => {
+                        this.checkReminderConditions();
+                    }, 3000 - timeSinceLoad);
+                    return;
+                }
+
+                const shouldRemind = await this.shouldShowReminder();
+                if (shouldRemind) {
+                    this.showReminder();
+                }
+            }
+
+            // 判断是否应该显示提醒
+            async shouldShowReminder() {
+                const now = Date.now();
+                const lastBackup = this.getLastBackupTime();
+                const recordCount = this.getRecordCount();
+                const sessionCount = parseInt(localStorage.getItem('bookkeeping_session_count') || '0', 10);
+                
+                console.log('=== 备份提醒检查 ===');
+                console.log('当前记录计数:', recordCount, '/ 阈值:', this.settings.recordThreshold);
+                console.log('会话计数:', sessionCount, '/ 阈值:', this.settings.sessionThreshold);
+                console.log('最后备份时间:', lastBackup ? new Date(lastBackup).toLocaleString() : '从未备份');
+                
+                // 检查上次提醒显示时间，避免频繁显示（至少间隔10分钟）
+                const lastReminderShown = localStorage.getItem('bookkeeping_last_reminder_shown');
+                if (lastReminderShown && (now - parseInt(lastReminderShown, 10)) < 10 * 60 * 1000) {
+                    console.log('备份提醒：距离上次提醒时间过短，跳过显示');
+                    return false;
+                }
+                
+                // 条件1: 超过时间间隔
+                if (lastBackup && (now - lastBackup) > this.settings.timeInterval) {
+                    console.log('备份提醒：触发条件1 - 超过时间间隔');
+                    return true;
+                }
+
+                // 条件2: 新增记录超过阈值
+                if (recordCount >= this.settings.recordThreshold) {
+                    console.log('备份提醒：触发条件2 - 新增记录超过阈值');
+                    return true;
+                }
+
+                // 条件3: 连续使用超过阈值
+                if (sessionCount >= this.settings.sessionThreshold) {
+                    console.log('备份提醒：触发条件3 - 连续使用超过阈值');
+                    return true;
+                }
+
+                // 条件4: 连续多天有记录
+                const continuousDays = await this.getContinuousRecordDays();
+                console.log('连续记录天数:', continuousDays, '/ 阈值:', this.settings.continuousDaysThreshold);
+                if (continuousDays >= this.settings.continuousDaysThreshold) {
+                    console.log('备份提醒：触发条件4 - 连续多天有记录');
+                    return true;
+                }
+
+                // 条件5: 数据量较大但从未备份
+                const totalRecords = await bookkeepingDB.getAllRecords();
+                console.log('总记录数:', totalRecords.length);
+                if (totalRecords.length >= 50 && !lastBackup) {
+                    console.log('备份提醒：触发条件5 - 数据量较大但从未备份');
+                    return true;
+                }
+
+                console.log('备份提醒：所有条件都不满足，不显示提醒');
+                return false;
+            }
+
+            // 获取连续有记录的天数
+            async getContinuousRecordDays() {
+                try {
+                    const records = await bookkeepingDB.getAllRecords();
+                    const today = new Date();
+                    let continuousDays = 0;
+                    
+                    for (let i = 0; i < 30; i++) { // 最多检查30天
+                        const checkDate = new Date(today);
+                        checkDate.setDate(today.getDate() - i);
+                        const dateStr = checkDate.toISOString().split('T')[0];
+                        
+                        const hasRecordsOnDate = records.some(record => record.date.startsWith(dateStr));
+                        if (hasRecordsOnDate) {
+                            continuousDays++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    return continuousDays;
+                } catch (error) {
+                    console.warn('检查连续记录天数失败:', error);
+                    return 0;
+                }
+            }
+
+            // 显示提醒
+            async showReminder() {
+                if (this.isReminderVisible) return;
+                
+                this.isReminderVisible = true;
+                const reminderEl = document.getElementById('backup-reminder');
+                
+                // 更新统计信息
+                await this.updateReminderStats();
+                
+                // 显示提醒
+                reminderEl.style.display = 'block';
+                // 使用requestAnimationFrame确保DOM更新后再移除hidden类
+                requestAnimationFrame(() => {
+                    reminderEl.classList.remove('hidden');
+                });
+                
+                // 记录提醒显示时间
+                localStorage.setItem('bookkeeping_last_reminder_shown', Date.now().toString());
+            }
+
+            // 隐藏提醒
+            hideReminder() {
+                this.isReminderVisible = false;
+                const reminderEl = document.getElementById('backup-reminder');
+                reminderEl.classList.add('hidden');
+                // 延迟隐藏，让动画完成
+                setTimeout(() => {
+                    if (this.isReminderVisible === false) {
+                        reminderEl.style.display = 'none';
+                    }
+                }, 300); // 与CSS动画时间一致
+            }
+
+            // 更新提醒统计信息
+            async updateReminderStats() {
+                try {
+                    const records = await bookkeepingDB.getAllRecords();
+                    const lastBackup = this.getLastBackupTime();
+                    
+                    // 计算统计数据
+                    const totalRecords = records.length;
+                    const totalExpense = records
+                        .filter(r => r.category === 'expense')
+                        .reduce((sum, r) => sum + parseFloat(r.amount), 0);
+                    const totalIncome = records
+                        .filter(r => r.category === 'income')
+                        .reduce((sum, r) => sum + parseFloat(r.amount), 0);
+                    
+                    // 计算最后备份距离现在的天数
+                    let daysSinceLastBackup = '从未备份';
+                    if (lastBackup) {
+                        const days = Math.floor((Date.now() - lastBackup) / (24 * 60 * 60 * 1000));
+                        daysSinceLastBackup = `${days}天前`;
+                    }
+                    
+                    // 更新统计显示
+                    const statsEl = document.getElementById('backup-reminder-stats');
+                    statsEl.innerHTML = `
+                        <div class="stat-item">
+                            <span>总记录数</span>
+                            <span>${totalRecords} 条</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>总支出</span>
+                            <span>¥${totalExpense.toFixed(2)}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>总收入</span>
+                            <span>¥${totalIncome.toFixed(2)}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>最后备份</span>
+                            <span>${daysSinceLastBackup}</span>
+                        </div>
+                    `;
+                } catch (error) {
+                    console.error('更新提醒统计信息失败:', error);
+                }
+            }
+
+            // 获取最后备份时间
+            getLastBackupTime() {
+                const lastBackup = localStorage.getItem(this.lastBackupKey);
+                return lastBackup ? parseInt(lastBackup, 10) : null;
+            }
+
+            // 标记备份完成
+            markBackupCompleted() {
+                localStorage.setItem(this.lastBackupKey, Date.now().toString());
+                localStorage.setItem(this.recordCountKey, '0'); // 重置记录计数
+                localStorage.setItem('bookkeeping_session_count', '0'); // 重置会话计数
+                showNotification('备份提醒已重置', 'success');
+            }
+
+            // 安排提醒
+            scheduleReminder(delay) {
+                const reminderTime = Date.now() + delay;
+                localStorage.setItem('bookkeeping_scheduled_reminder', reminderTime.toString());
+                showNotification(`将在 ${this.formatDelay(delay)} 后再次提醒`, 'info');
+            }
+
+            // 格式化延迟时间
+            formatDelay(delay) {
+                const hours = Math.floor(delay / (60 * 60 * 1000));
+                const minutes = Math.floor((delay % (60 * 60 * 1000)) / (60 * 1000));
+                
+                if (hours > 0) {
+                    return `${hours}小时${minutes > 0 ? minutes + '分钟' : ''}`;
+                } else {
+                    return `${minutes}分钟`;
+                }
+            }
+
+            // 检查预定的提醒
+            checkScheduledReminder() {
+                const scheduledTime = localStorage.getItem('bookkeeping_scheduled_reminder');
+                if (scheduledTime && Date.now() >= parseInt(scheduledTime, 10)) {
+                    localStorage.removeItem('bookkeeping_scheduled_reminder');
+                    this.checkReminderConditions();
+                }
+            }
+        }
+
+        // 创建备份提醒系统实例
+        const backupReminder = new BackupReminderSystem();
+
+        // 测试备份提醒系统的函数（用于演示）
+        window.testBackupReminder = function() {
+            console.log('=== 备份提醒系统测试 ===');
+            console.log('当前设置:', backupReminder.settings);
+            console.log('记录计数:', backupReminder.getRecordCount());
+            console.log('最后备份时间:', backupReminder.getLastBackupTime());
+            console.log('会话计数:', localStorage.getItem('bookkeeping_session_count'));
+            
+            // 强制显示提醒（用于测试）
+            backupReminder.showReminder();
+        };
+
+        // 重置备份提醒系统的函数（用于测试）
+        window.resetBackupReminder = function() {
+            localStorage.removeItem('bookkeeping_last_backup');
+            localStorage.removeItem('bookkeeping_record_count');
+            localStorage.removeItem('bookkeeping_session_count');
+            localStorage.removeItem('bookkeeping_scheduled_reminder');
+            localStorage.removeItem('bookkeeping_last_reminder_shown');
+            console.log('备份提醒系统已重置');
+            backupReminder.checkReminderConditions();
+        };
+
+        // 模拟添加记录的测试函数
+        window.simulateAddRecords = function(count = 5) {
+            for (let i = 0; i < count; i++) {
+                backupReminder.incrementRecordCount();
+            }
+            console.log(`模拟添加了 ${count} 条记录，当前计数:`, backupReminder.getRecordCount());
+            backupReminder.checkReminderConditions();
+        };
+
+        // 测试页面加载时的提醒行为
+        window.testPageLoadReminder = function() {
+            console.log('=== 页面加载提醒测试 ===');
+            console.log('页面加载时间:', performance.timing.navigationStart);
+            console.log('当前时间:', Date.now());
+            console.log('页面加载耗时:', Date.now() - performance.timing.navigationStart, 'ms');
+            
+            // 强制检查提醒条件
+            backupReminder.checkReminderConditions();
+        };
+
         // 数据迁移功能
         async function checkAndMigrateData() {
             try {
@@ -2382,12 +3054,41 @@
                 initializeTimeSummary();
                 initializeCustomDatePicker();
                 
+                // 初始化备份提醒系统
+                initializeBackupReminder();
+                
                 showNotification('系统初始化完成', 'success');
             } catch (error) {
                 console.error('初始化失败:', error);
                 showNotification('系统初始化失败: ' + error.message, 'error');
             }
         });
+
+        // 初始化备份提醒系统
+        function initializeBackupReminder() {
+            // 检查预定的提醒
+            backupReminder.checkScheduledReminder();
+            
+            // 设置定期检查（每30分钟检查一次）
+            setInterval(() => {
+                backupReminder.checkScheduledReminder();
+                if (!backupReminder.isReminderVisible) {
+                    backupReminder.checkReminderConditions();
+                }
+            }, 30 * 60 * 1000); // 30分钟
+            
+            // 页面可见性变化时检查提醒（延迟检查避免立即显示）
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    setTimeout(() => {
+                        backupReminder.checkScheduledReminder();
+                        if (!backupReminder.isReminderVisible) {
+                            backupReminder.checkReminderConditions();
+                        }
+                    }, 1000); // 1秒后检查
+                }
+            });
+        }
 
         // 初始化日历
         function initializeCalendar() {
@@ -2670,6 +3371,11 @@
                 document.getElementById('import-file').click();
             });
             document.getElementById('import-file').addEventListener('change', importData);
+            
+            // 备份提醒功能
+            document.getElementById('backup-reminder-btn').addEventListener('click', () => {
+                backupReminder.showReminder();
+            });
             
             // 修改记录模态框事件监听
             document.getElementById('close-edit-modal').addEventListener('click', closeEditModal);
@@ -3039,6 +3745,9 @@
                 linkElement.setAttribute('download', exportFileDefaultName);
                 linkElement.click();
                 
+                // 标记备份完成
+                backupReminder.markBackupCompleted();
+                
                 showNotification(`数据导出成功，共导出 ${allRecords.length} 条记录`, 'success');
             } catch (error) {
                 console.error('导出数据失败:', error);
@@ -3116,7 +3825,7 @@
             
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, 1000);
         }
 
         // 生成时间汇总
