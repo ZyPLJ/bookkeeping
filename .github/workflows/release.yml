@@ -3,8 +3,8 @@ name: 发布版本通知
 on:
   push:
     tags:
-      - 'v*'
-  workflow_dispatch:
+      - 'v*'  # 当推送以v开头的标签时触发
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   release:
@@ -15,61 +15,95 @@ jobs:
       contents: write  # 允许写入内容（创建release）
     
     steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: 获取版本信息
-        id: version
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          echo "发布版本: $VERSION"
-
-      - name: 生成发布说明
-        id: changelog
-        run: |
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+    - name: 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 获取完整的git历史
+    
+    - name: 获取版本信息
+      id: version
+      run: |
+        # 从标签获取版本号（去掉v前缀）
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        echo "发布版本: $VERSION"
+    
+    - name: 生成发布说明
+      id: changelog
+      run: |
+        # 获取上一个标签
+        PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+        
+        if [ -z "$PREVIOUS_TAG" ]; then
+          echo "这是第一个发布版本"
+          CHANGELOG="🎉 首个版本发布！\n\n### 主要功能\n- 日历记账系统\n- 自定义日期选择器\n- 统计图表生成\n- 数据导入导出"
+        else
+          echo "上一个标签: $PREVIOUS_TAG"
+          # 生成从上一个标签到当前标签的提交记录
+          CHANGELOG=$(git log --pretty=format:"- %s (%h)" $PREVIOUS_TAG..HEAD | head -20)
           
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "这是第一个发布版本"
-            CHANGELOG="🎉 首个版本发布！\n\n### 主要功能\n- 日历记账系统\n- 自定义日期选择器\n- 统计图表生成\n- 数据导入导出"
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="### 更新内容\n- 版本更新和优化"
           else
-            echo "上一个标签: $PREVIOUS_TAG"
-            CHANGELOG=$(git log --pretty=format:"- %s (%h)" $PREVIOUS_TAG..HEAD | head -20)
-          
-            if [ -z "$CHANGELOG" ]; then
-              CHANGELOG="### 更新内容\n- 版本更新和优化"
-            else
-              CHANGELOG="### 更新内容\n$CHANGELOG"
-            fi
+            CHANGELOG="### 更新内容\n$CHANGELOG"
           fi
+        fi
+        
+        # 转义换行符
+        CHANGELOG=$(echo "$CHANGELOG" | sed ':a;N;$!ba;s/\n/\\n/g')
+        echo "changelog<<EOF" >> $GITHUB_OUTPUT
+        echo -e "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+    
+    - name: 创建GitHub发布
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.version.outputs.tag }}
+        release_name: 版本 ${{ steps.version.outputs.version }}
+        body: |
+          ## 📦 版本 ${{ steps.version.outputs.version }}
           
-          CHANGELOG=$(echo "$CHANGELOG" | sed ':a;N;$!ba;s/\n/\\n/g')
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: 创建GitHub发布
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          release_name: 版本 ${{ steps.version.outputs.version }}
-          body: |
-            ## 📦 版本 ${{ steps.version.outputs.version }}
-            
-            ${{ steps.changelog.outputs.changelog }}
-            
-            ### 📋 安装说明
-            # ... 保持你原来的内容不变
-          draft: false
-          prerelease: false
-
-      - name: 发布成功通知
-        run: |
-          echo "✅ 版本 ${{ steps.version.outputs.version }} 发布成功！"
-          echo "🔗 发布地址: https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.tag }}"
+          ${{ steps.changelog.outputs.changelog }}
+          
+          ### 📋 安装说明
+          
+          **方法一：直接下载**
+          - 下载 `bookkeeping.html` 文件
+          - 在浏览器中打开即可使用
+          
+          **方法二：克隆仓库**
+          ```bash
+          git clone https://github.com/${{ github.repository }}.git
+          cd bookkeeping
+          # 在浏览器中打开 bookkeeping.html
+          ```
+          
+          ### 🚀 功能特性
+          - 📅 日历式记账界面
+          - 📊 多种图表统计（柱状图、饼图、折线图）
+          - 📈 自定义日期范围查询
+          - 💾 数据本地存储
+          - 📤 数据导入导出
+          - 🎨 现代化UI设计
+          
+          ### 🛠️ 技术栈
+          - HTML5 + CSS3 + JavaScript
+          - IndexedDB 本地存储
+          - Chart.js 图表库
+          - Font Awesome 图标
+          
+          ---
+          
+          **感谢使用日历记账系统！** 🎉
+          
+          如有问题或建议，欢迎提交 Issue 或 Pull Request。
+        draft: false
+        prerelease: false
+    
+    - name: 发布成功通知
+      run: |
+        echo "✅ 版本 ${{ steps.version.outputs.version }} 发布成功！"
+        echo "🔗 发布地址: https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.tag }}"
