@@ -525,6 +525,33 @@
         .form-group.full-width {
             grid-column: span 2;
         }
+
+        /* 日期范围行样式 - 开始和结束日期水平排列 */
+        .date-range-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .date-range-item {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .date-range-item label {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* 响应式设计 - 小屏幕时垂直排列 */
+        @media (max-width: 768px) {
+            .date-range-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
         
         label {
             display: flex;
@@ -2169,14 +2196,55 @@
                                 <option value="line">📈 折线图</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="date-range-row">
+                        <div class="date-range-item">
+                            <label for="chart-start-date"><i class="fas fa-calendar-plus"></i> 开始日期</label>
+                            <div class="custom-date-picker">
+                                <input type="text" class="custom-date-input" id="chart-start-date" placeholder="请选择开始日期" readonly>
+                                <span class="custom-date-icon">📅</span>
+                                <div class="date-picker-popup" id="chart-start-date-picker-popup">
+                                    <div class="date-picker-header">
+                                        <div class="date-picker-title" id="chart-start-date-picker-title">2023年11月</div>
+                                        <div class="date-picker-nav">
+                                            <button type="button" class="date-picker-nav-btn" id="chart-start-prev-month-btn">‹</button>
+                                            <button type="button" class="date-picker-nav-btn" id="chart-start-next-month-btn">›</button>
+                                        </div>
+                                    </div>
+                                    <div class="date-picker-calendar" id="chart-start-date-picker-calendar">
+                                        <!-- 日期将通过JavaScript动态生成 -->
+                                    </div>
+                                    <div class="date-picker-actions">
+                                        <button type="button" class="date-picker-btn secondary" id="chart-start-clear-date-btn">清除</button>
+                                        <button type="button" class="date-picker-btn primary" id="chart-start-confirm-date-btn">确定</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <div class="form-group">
-                            <label for="stats-period"><i class="fas fa-clock"></i> 统计周期</label>
-                            <select id="stats-period">
-                                <option value="week">📅 本周</option>
-                                <option value="month" selected>📆 本月</option>
-                                <option value="year">🗓️ 本年</option>
-                            </select>
+                        <div class="date-range-item">
+                            <label for="chart-end-date"><i class="fas fa-calendar-check"></i> 结束日期</label>
+                            <div class="custom-date-picker">
+                                <input type="text" class="custom-date-input" id="chart-end-date" placeholder="请选择结束日期" readonly>
+                                <span class="custom-date-icon">📅</span>
+                                <div class="date-picker-popup" id="chart-end-date-picker-popup">
+                                    <div class="date-picker-header">
+                                        <div class="date-picker-title" id="chart-end-date-picker-title">2023年11月</div>
+                                        <div class="date-picker-nav">
+                                            <button type="button" class="date-picker-nav-btn" id="chart-end-prev-month-btn">‹</button>
+                                            <button type="button" class="date-picker-nav-btn" id="chart-end-next-month-btn">›</button>
+                                        </div>
+                                    </div>
+                                    <div class="date-picker-calendar" id="chart-end-date-picker-calendar">
+                                        <!-- 日期将通过JavaScript动态生成 -->
+                                    </div>
+                                    <div class="date-picker-actions">
+                                        <button type="button" class="date-picker-btn secondary" id="chart-end-clear-date-btn">清除</button>
+                                        <button type="button" class="date-picker-btn primary" id="chart-end-confirm-date-btn">确定</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -3053,6 +3121,7 @@
                 setupEventListeners();
                 initializeTimeSummary();
                 initializeCustomDatePicker();
+                initializeChartDateRangeDefaults();
                 
                 // 初始化备份提醒系统
                 initializeBackupReminder();
@@ -3569,34 +3638,24 @@
         }
 
         // 生成图表
-        function generateChart() {
+        async function generateChart() {
             const chartType = document.getElementById('chart-type').value;
-            const period = document.getElementById('stats-period').value;
-            
-            // 根据周期筛选记录
-            let filteredRecords = [...records];
-            const now = new Date();
-            
-            if (period === 'week') {
-                const oneWeekAgo = new Date(now);
-                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-                filteredRecords = filteredRecords.filter(record => {
-                    const recordDate = new Date(record.date);
-                    return recordDate >= oneWeekAgo && recordDate <= now;
-                });
-            } else if (period === 'month') {
-                filteredRecords = filteredRecords.filter(record => {
-                    const recordDate = new Date(record.date);
-                    return recordDate.getMonth() === now.getMonth() && 
-                           recordDate.getFullYear() === now.getFullYear();
-                });
-            } else if (period === 'year') {
-                filteredRecords = filteredRecords.filter(record => {
-                    const recordDate = new Date(record.date);
-                    return recordDate.getFullYear() === now.getFullYear();
-                });
+            const startDate = document.getElementById('chart-start-date')?.value;
+            const endDate = document.getElementById('chart-end-date')?.value;
+
+            if (!startDate || !endDate) {
+                showNotification('请选择图表的开始和结束日期', 'warning');
+                return;
             }
-            
+
+            if (new Date(startDate) > new Date(endDate)) {
+                showNotification('开始日期不能晚于结束日期', 'error');
+                return;
+            }
+
+            // 从IndexedDB按日期范围获取记录
+            let filteredRecords = await bookkeepingDB.getRecordsByDateRange(startDate, endDate);
+
             // 只统计支出
             const expenses = filteredRecords.filter(record => record.category === 'expense');
             
@@ -4105,6 +4164,24 @@
             }
         }
 
+        // 初始化统计图表日期范围默认值（本月）
+        function initializeChartDateRangeDefaults() {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const startInput = document.getElementById('chart-start-date');
+            const endInput = document.getElementById('chart-end-date');
+            if (startInput && endInput) {
+                const formatDate = (date) => {
+                    const year = date.getFullYear();
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    const day = date.getDate().toString().padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                };
+                startInput.value = formatDate(firstDayOfMonth);
+                endInput.value = formatDate(today);
+            }
+        }
+
         // 工具函数：判断两个日期是否为同一天
         function isSameDay(date1, date2) {
             return date1.getFullYear() === date2.getFullYear() &&
@@ -4438,6 +4515,8 @@
             initializeDatePicker('summary-start-date', 'summary-start-date-picker-popup', 'summary-start-date-picker-title', 'summary-start-date-picker-calendar', 'summary-start-prev-month-btn', 'summary-start-next-month-btn', 'summary-start-clear-date-btn', 'summary-start-confirm-date-btn');
             initializeDatePicker('summary-end-date', 'summary-end-date-picker-popup', 'summary-end-date-picker-title', 'summary-end-date-picker-calendar', 'summary-end-prev-month-btn', 'summary-end-next-month-btn', 'summary-end-clear-date-btn', 'summary-end-confirm-date-btn');
             initializeDatePicker('edit-record-date', 'edit-date-picker-popup', 'edit-date-picker-title', 'edit-date-picker-calendar', 'edit-prev-month-btn', 'edit-next-month-btn', 'edit-clear-date-btn', 'edit-confirm-date-btn');
+            initializeDatePicker('chart-start-date', 'chart-start-date-picker-popup', 'chart-start-date-picker-title', 'chart-start-date-picker-calendar', 'chart-start-prev-month-btn', 'chart-start-next-month-btn', 'chart-start-clear-date-btn', 'chart-start-confirm-date-btn');
+            initializeDatePicker('chart-end-date', 'chart-end-date-picker-popup', 'chart-end-date-picker-title', 'chart-end-date-picker-calendar', 'chart-end-prev-month-btn', 'chart-end-next-month-btn', 'chart-end-clear-date-btn', 'chart-end-confirm-date-btn');
         }
     </script>
 </body>
