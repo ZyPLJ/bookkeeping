@@ -364,7 +364,7 @@
             box-shadow: var(--shadow-xl);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: hidden;
+            /*overflow: hidden;*/
         }
         
         .calendar-section::before, .records-section::before {
@@ -4469,20 +4469,33 @@
                         popup.style.width = '90vw';
                         popup.style.maxWidth = '400px';
                         popup.style.zIndex = '10000';
+                        // 清除可能影响背景的样式
+                        popup.style.bottom = '';
+                        popup.style.marginTop = '';
+                        popup.style.marginBottom = '';
                     } else {
                         // 桌面端：重新计算位置
                         const inputRect = dateInput.getBoundingClientRect();
                         const popupHeight = 400;
                         
-                        // 重置样式
+                        // 完全重置样式，确保没有残留的样式影响
                         popup.style.position = 'absolute';
                         popup.style.top = '100%';
                         popup.style.left = '0';
                         popup.style.right = '0';
+                        popup.style.bottom = '';
                         popup.style.transform = 'none';
                         popup.style.width = '100%';
                         popup.style.zIndex = '1000';
                         popup.style.marginTop = '8px';
+                        popup.style.marginBottom = '';
+                        
+                        // 确保背景样式正确
+                        popup.style.background = 'white';
+                        popup.style.border = '1px solid #e5e7eb';
+                        popup.style.borderRadius = '8px';
+                        popup.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+                        popup.style.padding = '20px';
                         
                         // 检查下方空间是否足够
                         const spaceBelow = window.innerHeight - inputRect.bottom;
