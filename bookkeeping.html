@@ -2949,6 +2949,9 @@
                     return;
                 }
 
+                // 首先检查预定的提醒
+                this.checkScheduledReminder();
+
                 const shouldRemind = await this.shouldShowReminder();
                 if (shouldRemind) {
                     this.showReminder();
@@ -2966,6 +2969,21 @@
                 console.log('当前记录计数:', recordCount, '/ 阈值:', this.settings.recordThreshold);
                 console.log('会话计数:', sessionCount, '/ 阈值:', this.settings.sessionThreshold);
                 console.log('最后备份时间:', lastBackup ? new Date(lastBackup).toLocaleString() : '从未备份');
+                
+                // 检查是否有预定的提醒时间
+                const scheduledTime = localStorage.getItem('bookkeeping_scheduled_reminder');
+                if (scheduledTime) {
+                    const scheduledTimestamp = parseInt(scheduledTime, 10);
+                    console.log('预定提醒时间:', new Date(scheduledTimestamp).toLocaleString());
+                    if (now >= scheduledTimestamp) {
+                        console.log('备份提醒：触发预定提醒');
+                        localStorage.removeItem('bookkeeping_scheduled_reminder');
+                        return true;
+                    } else {
+                        console.log('备份提醒：预定提醒时间未到，跳过其他检查');
+                        return false;
+                    }
+                }
                 
                 // 检查上次提醒显示时间，避免频繁显示（至少间隔10分钟）
                 const lastReminderShown = localStorage.getItem('bookkeeping_last_reminder_shown');
@@ -3131,7 +3149,10 @@
                 localStorage.setItem(this.lastBackupKey, Date.now().toString());
                 localStorage.setItem(this.recordCountKey, '0'); // 重置记录计数
                 localStorage.setItem('bookkeeping_session_count', '0'); // 重置会话计数
+                localStorage.removeItem('bookkeeping_scheduled_reminder'); // 清除预定提醒
+                localStorage.removeItem('bookkeeping_last_reminder_shown'); // 清除上次提醒时间
                 showNotification('备份提醒已重置', 'success');
+                console.log('备份完成，已重置所有提醒状态');
             }
 
             // 安排提醒
@@ -3156,9 +3177,16 @@
             // 检查预定的提醒
             checkScheduledReminder() {
                 const scheduledTime = localStorage.getItem('bookkeeping_scheduled_reminder');
-                if (scheduledTime && Date.now() >= parseInt(scheduledTime, 10)) {
-                    localStorage.removeItem('bookkeeping_scheduled_reminder');
-                    this.checkReminderConditions();
+                if (scheduledTime) {
+                    const scheduledTimestamp = parseInt(scheduledTime, 10);
+                    const now = Date.now();
+                    console.log('检查预定提醒:', new Date(scheduledTimestamp).toLocaleString(), '当前时间:', new Date(now).toLocaleString());
+                    
+                    if (now >= scheduledTimestamp) {
+                        console.log('预定提醒时间已到，清除预定提醒');
+                        localStorage.removeItem('bookkeeping_scheduled_reminder');
+                        // 不在这里直接调用 checkReminderConditions，避免重复检查
+                    }
                 }
             }
         }
@@ -3173,21 +3201,25 @@
             console.log('记录计数:', backupReminder.getRecordCount());
             console.log('最后备份时间:', backupReminder.getLastBackupTime());
             console.log('会话计数:', localStorage.getItem('bookkeeping_session_count'));
+            console.log('预定提醒时间:', localStorage.getItem('bookkeeping_scheduled_reminder'));
+            console.log('上次提醒时间:', localStorage.getItem('bookkeeping_last_reminder_shown'));
             
             // 强制显示提醒（用于测试）
             backupReminder.showReminder();
         };
 
-        // 重置备份提醒系统的函数（用于测试）
+        // 重置备份提醒状态的函数（用于调试）
         window.resetBackupReminder = function() {
-            localStorage.removeItem('bookkeeping_last_backup');
-            localStorage.removeItem('bookkeeping_record_count');
-            localStorage.removeItem('bookkeeping_session_count');
+            console.log('=== 重置备份提醒状态 ===');
             localStorage.removeItem('bookkeeping_scheduled_reminder');
             localStorage.removeItem('bookkeeping_last_reminder_shown');
-            console.log('备份提醒系统已重置');
-            backupReminder.checkReminderConditions();
+            localStorage.setItem('bookkeeping_record_count', '0');
+            localStorage.setItem('bookkeeping_session_count', '0');
+            localStorage.setItem('bookkeeping_last_backup', Date.now().toString());
+            console.log('备份提醒状态已重置');
+            showNotification('备份提醒状态已重置', 'success');
         };
+
 
         // 模拟添加记录的测试函数
         window.simulateAddRecords = function(count = 5) {
